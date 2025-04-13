@@ -7,17 +7,21 @@ from src.core.constants import *
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+
         self.image = pygame.image.load('./assets/images/sprite.png')
         original_width, original_height = self.image.get_size()
         new_size = (original_width // 10, original_height // 10)
         self.image = pygame.transform.scale(self.image, new_size)
         self.original_image = self.image
         self.rect = self.image.get_rect()
+
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100)
+
         self.velocity_y = 0
         self.velocity_x = 0
+
         self.is_jumping = False
         self.facing_right = True
 
@@ -32,30 +36,20 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and not self.is_jumping:
             self.__jump()
 
-        # Горизонтальное движение и коллизии
         self.rect.x += self.velocity_x
         self.__handle_horizontal_collisions(scene.platforms)
 
-        # Вертикальное движение и коллизии
         self.velocity_y += GRAVITY
         self.rect.y += int(self.velocity_y)
         self.__handle_vertical_collisions(scene.platforms)
 
-        # Нижняя граница экрана
         if self.rect.bottom >= SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
             self.velocity_y = 0
             self.is_jumping = False
 
-        # Обновление направления
-        if self.velocity_x < 0 and self.facing_right:
-            self.image = self.original_image
-            self.facing_right = False
-        elif self.velocity_x > 0 and not self.facing_right:
-            self.image = pygame.transform.flip(self.original_image, True, False)
-            self.facing_right = True
-
-        self.__handle_walls(scene)
+        self.__handle_update_direction()
+        self.__handle_borders(scene)
 
     def __jump(self):
         self.velocity_y = JUMP_STRENGTH
@@ -64,23 +58,23 @@ class Player(pygame.sprite.Sprite):
     def __handle_horizontal_collisions(self, platforms: pygame.sprite.Group):
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
-                if self.velocity_x > 0:  # Движение вправо
+                if self.velocity_x > 0: 
                     self.rect.right = platform.rect.left
-                elif self.velocity_x < 0:  # Движение влево
+                elif self.velocity_x < 0: 
                     self.rect.left = platform.rect.right
 
     def __handle_vertical_collisions(self, platforms: pygame.sprite.Group):
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
-                if self.velocity_y > 0:  # Падение вниз
+                if self.velocity_y > 0: 
                     self.rect.bottom = platform.rect.top
                     self.velocity_y = 0
                     self.is_jumping = False
-                elif self.velocity_y < 0:  # Удар вверх
+                elif self.velocity_y < 0: 
                     self.rect.top = platform.rect.bottom
                     self.velocity_y = 0
 
-    def __handle_walls(self, scene: Scene):
+    def __handle_borders(self, scene: Scene):
         self.rect.left = max(0, self.rect.left)
         self.rect.right = min(scene.width, self.rect.right)
         if self.rect.bottom > scene.height:
@@ -89,3 +83,11 @@ class Player(pygame.sprite.Sprite):
             self.velocity_y = 0
         self.rect.top = max(0, self.rect.top)
         self.rect.bottom = min(scene.height, self.rect.bottom)
+
+    def __handle_update_direction(self):
+        if self.velocity_x < 0 and self.facing_right:
+            self.image = self.original_image
+            self.facing_right = False
+        elif self.velocity_x > 0 and not self.facing_right:
+            self.image = pygame.transform.flip(self.original_image, True, False)
+            self.facing_right = True

@@ -15,3 +15,4 @@ class Scene:
 
     def __init__(self):
         self.platforms = pygame.sprite.Group()
+        self.coins = pygame.sprite.Group()
