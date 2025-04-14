@@ -1,11 +1,15 @@
 import pygame
 
-from src.core.constants import *
-from src.core.player import Player
+from src.core.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.core.sprites.player import Player
 from src.scenes.scene import Scene
 
 
 class Camera:
+    @property
+    def offset(self):
+        return pygame.Vector2(self.camera.x, self.camera.y)
+    
     def __init__(self):
         self.camera = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 

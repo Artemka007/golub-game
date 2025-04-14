@@ -1,3 +1,6 @@
+from abc import ABC, abstractmethod
+
+
 class Subject:
     def __init__(self):
         self._observers = []
@@ -10,6 +13,6 @@ class Subject:
         for observer in self._observers:
             observer.update(*args, **kwargs)
 
-class Observer:
-    def update(self, *args, **kwargs):
-        pass
+class Observer(ABC):
+    @abstractmethod
+    def update(self, *args, **kwargs): ...

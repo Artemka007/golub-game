@@ -1,6 +1,8 @@
 import math
 import pygame
 
+from src.core.camera import Camera
+
 
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, animation_speed=5):
@@ -23,13 +25,14 @@ class Coin(pygame.sprite.Sprite):
         if self.angle >= 360:
             self.angle = 0
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface, camera: Camera):
         if not self.collected:
             scale = abs(math.cos(self.angle * (3.14 / 180)))
             new_width = int(self.original_width * scale)
             scaled_image = pygame.transform.scale(self.image, (new_width, self.original_height))
             x_offset = (self.original_width - new_width) // 2
-            screen.blit(scaled_image, (self.x + x_offset, self.y))
+            rect: pygame.Rect = camera.apply(self)
+            screen.blit(scaled_image, (rect.x + x_offset, rect.y))
 
     def collect(self):
         self.collected = True

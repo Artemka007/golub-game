@@ -1,7 +1,7 @@
 from typing import List
-from src.core.player import Player
-from src.core.coin import Coin
-from src.core.observable import Subject
+from src.core.sprites.player import Player
+from src.core.sprites.coin import Coin
+from src.core.observer import Subject
 
 
 class CoinManager(Subject):
@@ -11,7 +11,7 @@ class CoinManager(Subject):
         self.coins_collected = 0
 
     def update_player(self, player: Player):
-        for coin in [i for i in self.coins][:]:
+        for coin in self.coins[:]:
             if not coin.collected and player.rect.colliderect(coin.rect):
                 coin.collect()
                 self.coins_collected += 1
