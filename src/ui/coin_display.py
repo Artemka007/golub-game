@@ -1,5 +1,5 @@
 import pygame
-from src.core.observer import Observer
+from src.core.patterns.observer import Observer
 
 
 class CoinDisplay(Observer):

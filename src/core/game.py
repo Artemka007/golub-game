@@ -2,7 +2,7 @@ import sys
 import pygame
 
 from src.core.coin_manager import CoinManager
-from src.core.observer import Observer
+from src.core.patterns.observer import Observer
 from src.core.camera import Camera
 from src.core.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from src.core.sprites.player import Player
