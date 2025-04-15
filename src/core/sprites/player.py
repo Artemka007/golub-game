@@ -29,7 +29,11 @@ class Player(pygame.sprite.Sprite):
         self.__handle_keypress()
         self.__handle_update_direction()
 
+        self.rect.x += self.velocity_x
         self.__handle_horizontal_collisions(scene.platforms)
+
+        self.velocity_y += GRAVITY
+        self.rect.y += int(self.velocity_y)
         self.__handle_vertical_collisions(scene.platforms)
 
         self.__handle_borders(scene)
@@ -46,11 +50,6 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and not self.is_jumping:
             self.velocity_y = JUMP_STRENGTH
             self.is_jumping = True
-
-        self.rect.x += self.velocity_x
-
-        self.velocity_y += GRAVITY
-        self.rect.y += int(self.velocity_y)
 
     def __handle_horizontal_collisions(self, platforms: pygame.sprite.Group):
         for platform in platforms:
