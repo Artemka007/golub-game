@@ -35,31 +35,31 @@ class Level(Scene):
         self.__init_menu()
     
     def update(self):
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    if self.menu.visible:
-                        self.menu.hide()
-                    else:
-                        self.menu.show()
-                self.menu.handle_event(event)
+        self.__draw_background()
 
-            self.__draw_background()
+        self.player.update(self)
+        self.coins_store.update_player(self.player)
 
-            self.player.update(self)
-            self.coins_store.update_player(self.player)
+        self.camera.update(self.player, self)
+        self.screen.blit(self.player.image, self.camera.apply(self.player))
 
-            self.camera.update(self.player, self)
-            self.screen.blit(self.player.image, self.camera.apply(self.player))
+        for platform in self.platforms:
+            self.screen.blit(platform.image, self.camera.apply(platform))
 
-            for platform in self.platforms:
-                self.screen.blit(platform.image, self.camera.apply(platform))
-
-            for coin in self.coins_store.coins:
-                coin.update()
-                coin.draw(self.screen, self.camera)
-            
-            self.coin_display.draw(self.screen)
-            self.menu.draw()
+        for coin in self.coins_store.coins:
+            coin.update()
+            coin.draw(self.screen, self.camera)
+        
+        self.coin_display.draw(self.screen)
+        self.menu.draw()
+    
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if self.menu.visible:
+                self.menu.hide()
+            else:
+                self.menu.show()
+        self.menu.handle_event(event)
 
     def __init_coins(self):
         self.coin_display = CoinDisplay()

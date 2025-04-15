@@ -1,7 +1,8 @@
+from abc import ABC, abstractmethod
 import pygame
 
 
-class Scene:
+class Scene(ABC):
     _width: int
     _height: int
 
@@ -12,3 +13,9 @@ class Scene:
     @property
     def height(self):
         return self._height
+
+    @abstractmethod
+    def update(self, *args, **kwargs): ...
+
+    @abstractmethod
+    def handle_event(self, *args, **kwargs): ...

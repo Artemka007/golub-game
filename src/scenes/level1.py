@@ -18,6 +18,7 @@ coins = [
     Coin(800 - 32, 130)
 ]
 
+
 class Level1(Level):
     def __init__(self, screen: pygame.Surface):
         super().__init__(screen, platforms, coins)
