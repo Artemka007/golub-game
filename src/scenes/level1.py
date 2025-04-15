@@ -1,20 +1,26 @@
+import pygame
+from src.core.models.level_model import Level
 from src.core.sprites.coin import Coin
 from src.core.sprites.platform import Platform
-from src.scenes.scene import Scene
 
 
-class Level1(Scene):
-    def __init__(self):
-        super().__init__()
-        
+platforms = [
+    Platform(100, 300),
+    Platform(400, 500),
+    Platform(700, 200),
+    Platform(1100, 600)
+]
+
+
+coins = [
+    Coin(200 - 32, 230),
+    Coin(500 - 32, 430),
+    Coin(800 - 32, 130)
+]
+
+class Level1(Level):
+    def __init__(self, screen: pygame.Surface):
+        super().__init__(screen, platforms, coins)
+
         self._width = 4000
         self._height = 4000
-
-        self.platforms.add(Platform(100, 300))
-        self.platforms.add(Platform(400, 500))
-        self.platforms.add(Platform(700, 200))
-        self.platforms.add(Platform(1100, 600))
-
-        self.coins.add(Coin(200 - 32, 230))
-        self.coins.add(Coin(500 - 32, 430))
-        self.coins.add(Coin(800 - 32, 130))

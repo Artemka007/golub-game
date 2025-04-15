@@ -2,7 +2,7 @@ import pygame
 
 from src.core.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.core.sprites.player import Player
-from src.scenes.scene import Scene
+from src.core.models.scene_model import Scene
 
 
 class Camera:

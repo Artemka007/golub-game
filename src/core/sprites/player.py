@@ -1,6 +1,6 @@
 import pygame
 
-from src.scenes.scene import Scene
+from src.core.models.scene_model import Scene
 from src.core.constants import SCREEN_HEIGHT, SCREEN_WIDTH, GRAVITY, PLAYER_SPEED, JUMP_STRENGTH
 
 

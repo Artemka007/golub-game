@@ -7,7 +7,7 @@ from src.core.sprites.coin import Coin
 from src.core.sprites.player import Player
 
 
-class GameStore:
+class LevelStore:
     def __init__(self):
         self.stack = Stack[GameState]()
     

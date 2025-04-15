@@ -12,7 +12,3 @@ class Scene:
     @property
     def height(self):
         return self._height
-
-    def __init__(self):
-        self.platforms = pygame.sprite.Group()
-        self.coins = pygame.sprite.Group()
