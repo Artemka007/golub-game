@@ -16,6 +16,10 @@ class CoinsStore(Subject):
     @property
     def coins_collected(self):
         return self.__coins_collected
+    
+    @coins_collected.setter
+    def coins_collected(self, coins_collected: int):
+        self.__coins_collected = coins_collected
 
     def __init__(self, coins: List[Coin]):
         super().__init__()

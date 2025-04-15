@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 
 class Subject:
     def __init__(self):
-        self._observers = []
+        self._observers: List['Observer'] = []
 
     def register_observer(self, observer):
         if observer not in self._observers:

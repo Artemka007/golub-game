@@ -1,16 +1,8 @@
 import sys
-from typing import Literal
 import pygame
 
-from src.core.patterns.event_emitter import EventEmitter
-from src.core.store.coins_store import CoinsStore
-from src.core.camera import Camera
 from src.core.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
-from src.core.sprites.player import Player
-from src.core.store.level_store import LevelStore
 from src.scenes.level1 import Level1
-from src.ui.coin_display import CoinDisplay
-from src.ui.menu import Menu
 
 
 class Game:
@@ -29,6 +21,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                self.current_scene.handle_event(event)
 
             self.current_scene.update()
 

@@ -10,3 +10,6 @@ class Stack[T]:
     
     def pop(self):
         return self.stack.pop()
+    
+    def empty(self):
+        return len(self.stack) == 0

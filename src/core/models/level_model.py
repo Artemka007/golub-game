@@ -10,7 +10,7 @@ from src.core.sprites.platform import Platform
 from src.core.store.coins_store import CoinsStore
 from src.core.camera import Camera
 from src.core.sprites.player import Player
-from src.core.store.level_store import LevelStore
+from src.core.store.persistent_level_store import PersistentLevelStore
 from src.ui.coin_display import CoinDisplay
 from src.ui.menu import Menu
 
@@ -20,7 +20,8 @@ class Level(Scene):
         super().__init__()
         
         self.screen = screen
-        self.level_store = LevelStore()
+        self.persistent_level_store = PersistentLevelStore()
+        self.emitter = EventEmitter[Literal['save', 'restart', 'cancel']]()
 
         self.platforms = pygame.sprite.Group(platforms)
         self.coins = pygame.sprite.Group(coins)
@@ -33,8 +34,19 @@ class Level(Scene):
 
         self.__init_coins()
         self.__init_menu()
+
+        self.__save_state()
+
+    def __del__(self):
+        self.emitter.off('save', self.__save_state)
+        self.emitter.off('restart', self.__restart_game)
+        self.emitter.off('cancel', self.__cancel)
     
     def update(self):
+        if self.menu.visible:
+            self.menu.draw()
+            return
+        
         self.__draw_background()
 
         self.player.update(self)
@@ -59,6 +71,8 @@ class Level(Scene):
                 self.menu.hide()
             else:
                 self.menu.show()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
+            self.persistent_level_store.apply(self.player, self.coins_store)
         self.menu.handle_event(event)
 
     def __init_coins(self):
@@ -67,11 +81,20 @@ class Level(Scene):
         self.coins_store.register_observer(self.coin_display)
 
     def __init_menu(self):
-        self.emitter = EventEmitter[Literal['save', 'restart', 'cancel']]()
-        self.emitter.on('save', lambda: self.game_store.save(self.player, self.coins_store.coins))
-        self.emitter.on('restart', lambda: print('Restart'))
-        self.emitter.on('cancel', lambda: print('Cancel!'))
+        self.emitter.on('save', self.__save_state)
+        self.emitter.on('restart', self.__restart_game)
+        self.emitter.on('cancel', self.__cancel)
         self.menu = Menu(self.screen, self.emitter)
+    
+    def __save_state(self):
+        self.persistent_level_store.save(self.player, self.coins_store.coins)
+        self.menu.hide()
+    
+    def __restart_game(self): 
+        self.__init__(self.screen)
+    
+    def __cancel(self): 
+        self.menu.hide()
     
     def __load_background(self):
         self.background = pygame.image.load("./assets/images/background.jpg").convert()
