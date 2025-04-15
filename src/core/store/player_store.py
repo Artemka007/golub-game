@@ -20,7 +20,7 @@ class PlayerStore(PersistentStore[PlayerState]):
             )
         )
     
-    def apply(self):
+    def undo(self):
         if self._stack.empty():
             return
         

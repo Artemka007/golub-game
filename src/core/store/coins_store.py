@@ -44,7 +44,7 @@ class CoinsStore(PersistentStore[CoinsState], Subject):
             CoinsState([Coin(i.x, i.y) for i in self.coins][:], self.coins_collected)
         )
     
-    def apply(self):
+    def undo(self):
         if self._stack.empty():
             return
         
