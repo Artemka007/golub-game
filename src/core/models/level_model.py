@@ -10,37 +10,42 @@ from src.core.sprites.platform import Platform
 from src.core.store.coins_store import CoinsStore
 from src.core.camera import Camera
 from src.core.sprites.player import Player
-from src.core.store.persistent_level_store import PersistentLevelStore
+from src.core.store.player_store import PlayerState, PlayerStore
 from src.ui.coin_display import CoinDisplay
 from src.ui.menu import Menu
 
 
 class Level(Scene):
-    def __init__(self, screen: pygame.Surface, platforms: List[Platform], coins: List[Coin]):
+    def __init__(self, screen: pygame.Surface):
         super().__init__()
         
         self.screen = screen
-        self.persistent_level_store = PersistentLevelStore()
-        self.emitter = EventEmitter[Literal['save', 'restart', 'cancel']]()
-
-        self.platforms = pygame.sprite.Group(platforms)
-        self.coins = pygame.sprite.Group(coins)
-        self.coins_collected = 0
-
-        self.__load_background()
-        
-        self.player = Player()
-        self.camera = Camera()
-
-        self.__init_coins()
-        self.__init_menu()
-
-        self.__save_state()
 
     def __del__(self):
         self.emitter.off('save', self.__save_state)
         self.emitter.off('restart', self.__restart_game)
         self.emitter.off('cancel', self.__cancel)
+    
+    def build_level(self, platforms: List[Platform], coins: List[Coin]):
+        self.player = Player()
+        self.camera = Camera()
+        
+        self.platforms = pygame.sprite.Group(platforms)
+        self.coins = pygame.sprite.Group(coins)
+
+        self.player_store = PlayerStore(self.player)
+        self.coins_store = CoinsStore(list(self.coins))
+        
+        self.emitter = EventEmitter[Literal['save', 'restart', 'cancel']]()
+
+        self.coins_collected = 0
+
+        self.__load_background()
+
+        self.__init_coins()
+        self.__init_menu()
+
+        self.__save_state()
     
     def update(self):
         if self.menu.visible:
@@ -65,19 +70,19 @@ class Level(Scene):
         self.coin_display.draw(self.screen)
         self.menu.draw()
     
-    def handle_event(self, event):
+    def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             if self.menu.visible:
                 self.menu.hide()
             else:
                 self.menu.show()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
-            self.persistent_level_store.apply(self.player, self.coins_store)
+            self.player_store.apply()
+            self.coins_store.apply()
         self.menu.handle_event(event)
 
     def __init_coins(self):
         self.coin_display = CoinDisplay()
-        self.coins_store = CoinsStore(list(self.coins))
         self.coins_store.register_observer(self.coin_display)
 
     def __init_menu(self):
@@ -87,7 +92,8 @@ class Level(Scene):
         self.menu = Menu(self.screen, self.emitter)
     
     def __save_state(self):
-        self.persistent_level_store.save(self.player, self.coins_store.coins)
+        self.player_store.save()
+        self.coins_store.save()
         self.menu.hide()
     
     def __restart_game(self): 
