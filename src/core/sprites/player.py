@@ -1,7 +1,7 @@
 import pygame
 
 from src.scenes.scene import Scene
-from src.core.constants import *
+from src.core.constants import SCREEN_HEIGHT, SCREEN_WIDTH, GRAVITY, PLAYER_SPEED, JUMP_STRENGTH
 
 
 class Player(pygame.sprite.Sprite):
@@ -37,6 +37,10 @@ class Player(pygame.sprite.Sprite):
         self.__handle_vertical_collisions(scene.platforms)
 
         self.__handle_borders(scene)
+    
+    def move(self, vector: pygame.Vector2):
+        self.rect.x = vector.x
+        self.rect.y = vector.y
     
     def __handle_keypress(self):
         keys = pygame.key.get_pressed()
