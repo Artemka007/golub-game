@@ -25,6 +25,8 @@ class Level(Scene):
         self.emitter.off('save', self.__save_state)
         self.emitter.off('restart', self.__restart_game)
         self.emitter.off('cancel', self.__cancel)
+        
+        self.coins_store.coins.unsubscribe(self.__draw_coins)
     
     def build_level(self, platforms: List[Platform], coins: List[Coin]):
         self.player = Player()
@@ -39,6 +41,7 @@ class Level(Scene):
         self.emitter = EventEmitter[Literal['save', 'restart', 'cancel']]()
 
         self.coins_collected = 0
+        self.coins = coins
 
         self.__load_background()
 
@@ -46,6 +49,8 @@ class Level(Scene):
         self.__init_menu()
 
         self.__save_state()
+
+        self.coins_store.coins.subscribe(self.__draw_coins)
     
     def update(self):
         if self.menu.visible:
@@ -63,7 +68,7 @@ class Level(Scene):
         for platform in self.platforms:
             self.screen.blit(platform.image, self.camera.apply(platform))
 
-        for coin in self.coins_store.coins:
+        for coin in self.coins:
             coin.update()
             coin.draw(self.screen, self.camera)
         
@@ -77,13 +82,15 @@ class Level(Scene):
             else:
                 self.menu.show()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
-            self.player_store.apply()
-            self.coins_store.apply()
+            self.player_store.undo()
+            self.coins_store.undo()
         self.menu.handle_event(event)
 
     def __init_coins(self):
-        self.coin_display = CoinDisplay()
-        self.coins_store.register_observer(self.coin_display)
+        self.coin_display = CoinDisplay(self.coins_store.coins_collected)
+    
+    def __draw_coins(self, coins: List[Coin]):
+        self.coins = coins
 
     def __init_menu(self):
         self.emitter.on('save', self.__save_state)

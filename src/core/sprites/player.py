@@ -41,6 +41,8 @@ class Player(pygame.sprite.Sprite):
     def move(self, vector: pygame.Vector2):
         self.rect.x = vector.x
         self.rect.y = vector.y
+
+        return self
     
     def __handle_keypress(self):
         keys = pygame.key.get_pressed()

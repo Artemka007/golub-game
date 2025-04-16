@@ -1,9 +1,9 @@
-from typing import Callable
+from typing import Callable, Dict, List
 
 
 class EventEmitter[T]:
     def __init__(self):
-        self._listeners = {}
+        self._listeners: Dict[str, List[Callable]] = {}
 
     def on(self, event_name: T, handler: Callable):
         if event_name not in self._listeners:
