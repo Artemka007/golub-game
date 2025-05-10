@@ -22,6 +22,8 @@ coins = [
 class Level1(Level):
     def __init__(self, screen: pygame.Surface):
         super().__init__(screen)
+
+        print(len(coins))
         
         self.build_level(platforms, coins)
 

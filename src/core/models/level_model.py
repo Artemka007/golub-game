@@ -12,6 +12,7 @@ from src.core.camera import Camera
 from src.core.sprites.player import Player
 from src.core.store.player_store import PlayerState, PlayerStore
 from src.ui.coin_display import CoinDisplay
+from src.ui.dead_menu import DeadMenu
 from src.ui.menu import Menu
 
 
@@ -20,25 +21,27 @@ class Level(Scene):
         super().__init__()
         
         self.screen = screen
+        self.emitter = EventEmitter[Literal['save', 'restart', 'cancel', 'player_dead']]()
 
     def __del__(self):
         self.emitter.off('save', self.__save_state)
         self.emitter.off('restart', self.__restart_game)
         self.emitter.off('cancel', self.__cancel)
-        
+        self.emitter.off('player_dead', self.__player_dead)
+    
         self.coins_store.coins.unsubscribe(self.__draw_coins)
     
     def build_level(self, platforms: List[Platform], coins: List[Coin]):
-        self.player = Player()
+
+        self.player = Player(self.emitter)
         self.camera = Camera()
         
         self.platforms = pygame.sprite.Group(platforms)
         self.coins = pygame.sprite.Group(coins)
 
         self.player_store = PlayerStore(self.player)
+
         self.coins_store = CoinsStore(list(self.coins))
-        
-        self.emitter = EventEmitter[Literal['save', 'restart', 'cancel']]()
 
         self.coins_collected = 0
         self.coins = coins
@@ -51,7 +54,7 @@ class Level(Scene):
         self.__save_state()
 
         self.coins_store.coins.subscribe(self.__draw_coins)
-    
+
     def update(self):
         if self.menu.visible:
             self.menu.draw()
@@ -74,6 +77,7 @@ class Level(Scene):
         
         self.coin_display.draw(self.screen)
         self.menu.draw()
+        self.dead_menu.draw()
     
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -85,6 +89,7 @@ class Level(Scene):
             self.player_store.undo()
             self.coins_store.undo()
         self.menu.handle_event(event)
+        self.dead_menu.handle_event(event)
 
     def __init_coins(self):
         self.coin_display = CoinDisplay(self.coins_store.coins_collected)
@@ -96,7 +101,9 @@ class Level(Scene):
         self.emitter.on('save', self.__save_state)
         self.emitter.on('restart', self.__restart_game)
         self.emitter.on('cancel', self.__cancel)
+        self.emitter.on('player_dead', self.__player_dead)
         self.menu = Menu(self.screen, self.emitter)
+        self.dead_menu = DeadMenu(self.screen, self.emitter)
     
     def __save_state(self):
         self.player_store.save()
@@ -104,7 +111,12 @@ class Level(Scene):
         self.menu.hide()
     
     def __restart_game(self): 
+        self.__del__()
         self.__init__(self.screen)
+    
+    def __player_dead(self): 
+        self.dead_menu.show()
+        self.emitter.off('player_dead', self.__player_dead)
     
     def __cancel(self): 
         self.menu.hide()

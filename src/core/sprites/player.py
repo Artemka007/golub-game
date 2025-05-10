@@ -1,11 +1,13 @@
+from typing import Literal
 import pygame
 
 from src.core.models.scene_model import Scene
 from src.core.constants import SCREEN_HEIGHT, SCREEN_WIDTH, GRAVITY, PLAYER_SPEED, JUMP_STRENGTH
+from src.core.patterns.event_emitter import EventEmitter
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, emitter: EventEmitter[Literal['player_dead']]):
         super().__init__()
 
         self.image = pygame.image.load('./assets/images/sprite.png')
@@ -24,6 +26,8 @@ class Player(pygame.sprite.Sprite):
 
         self.is_jumping = False
         self.facing_right = True
+
+        self.emitter = emitter
 
     def update(self, scene: Scene):
         self.__handle_keypress()
@@ -86,14 +90,15 @@ class Player(pygame.sprite.Sprite):
         self.rect.left = max(0, self.rect.left)
         self.rect.right = min(scene.width, self.rect.right)
         
-        if self.rect.bottom > scene.height:
+        if self.rect.top > scene.height:
             self.velocity_y = 0
+            self.emitter.emit('player_dead')
+            self.kill()
         
         if self.rect.top < 0:
-            self.velocity_y = 0
+            self.velocity_y = -self.velocity_y * 0.4
         
         self.rect.top = max(0, self.rect.top)
-        self.rect.bottom = min(scene.height, self.rect.bottom)
 
     def __handle_update_direction(self):
         if self.velocity_x < 0 and self.facing_right:

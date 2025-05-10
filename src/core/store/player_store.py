@@ -1,13 +1,12 @@
 import pygame
 from src.core.models.player_state import PlayerState
 from src.core.patterns.persistent_store import PersistentStore
-from src.core.patterns.stack import Stack
 from src.core.sprites.player import Player
 
 
 class PlayerStore(PersistentStore[PlayerState]):
     def __init__(self, player: Player):
-        self._stack = Stack[PlayerState]()
+        super().__init__()
         self._player = player
     
     def save(self):
