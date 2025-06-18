@@ -1,8 +1,9 @@
 import pygame
 
 from src.core.constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from src.core.sprites.player import Player
-from src.core.models.scene_model import Scene
+from src.core.models.player import PlayerModel
+from src.core.utils.scene_model import Scene
+from src.core.views.player import PlayerView
 
 
 class Camera:
@@ -16,7 +17,7 @@ class Camera:
     def apply(self, target: pygame.sprite.Sprite):
         return target.rect.move(-self.camera.x, -self.camera.y)
 
-    def update(self, player: Player, scene: Scene):
+    def update(self, player: PlayerModel, scene: Scene):
         self.camera.x = player.rect.centerx - SCREEN_WIDTH // 2
         self.camera.y = player.rect.centery - SCREEN_HEIGHT // 2
 

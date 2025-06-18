@@ -2,7 +2,7 @@ import sys
 import pygame
 
 from src.core.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
-from src.scenes.level1 import Level1
+from src.core.levels.level1 import Level1
 
 
 class Game:

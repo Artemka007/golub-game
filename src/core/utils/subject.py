@@ -1,4 +1,4 @@
-from src.core.patterns.observable import Observable
+from src.core.utils.observable import Observable
 
 
 class Subject[TValue](Observable[TValue]):

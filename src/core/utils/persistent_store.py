@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.core.patterns.stack import Stack
+from src.core.utils.stack import Stack
 
 
 class PersistentStore[T](ABC):

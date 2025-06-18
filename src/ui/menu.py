@@ -1,5 +1,5 @@
 import pygame
-from src.core.patterns.event_emitter import EventEmitter
+from src.core.utils.event_emitter import EventEmitter
 from src.ui.button import Button, WHITE
 
 from typing import Literal

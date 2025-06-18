@@ -1,11 +1,15 @@
 import pygame
-from src.core.models.player_state import PlayerState
-from src.core.patterns.persistent_store import PersistentStore
-from src.core.sprites.player import Player
+from src.core.controllers.player import PlayerController
+from src.core.utils.persistent_store import PersistentStore
+
+
+class PlayerState:
+    def __init__(self, position: pygame.Vector2):
+        self.position = position
 
 
 class PlayerStore(PersistentStore[PlayerState]):
-    def __init__(self, player: Player):
+    def __init__(self, player: PlayerController):
         super().__init__()
         self._player = player
     
@@ -13,8 +17,8 @@ class PlayerStore(PersistentStore[PlayerState]):
         self._stack.push(
             PlayerState(
                 pygame.Vector2(
-                    self._player.rect.x, 
-                    self._player.rect.y
+                    self._player.model.rect.x, 
+                    self._player.model.rect.y
                 )
             )
         )
@@ -23,5 +27,5 @@ class PlayerStore(PersistentStore[PlayerState]):
         if self._stack.empty():
             return
         
-        self._player.move(self._stack.pop().position)
+        self._player.model.move(self._stack.pop().position)
         
