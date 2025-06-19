@@ -21,5 +21,4 @@ class PlayerFactory(AbstractMVCFactory[PlayerModel, PlayerView, PlayerController
     def create_mvc_component(emitter: EventEmitter[Literal['player_dead']]):
         model = PlayerFactory.create_model(emitter)
         view = PlayerFactory.create_view()
-        controller = PlayerFactory.create_controller(model, view)
-        return controller
+        return PlayerFactory.create_controller(model, view)

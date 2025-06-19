@@ -21,5 +21,4 @@ class LevelFactory(AbstractMVCFactory[LevelModel, LevelView, LevelController]):
         emitter = EventEmitter[Literal['save', 'restart', 'cancel', 'player_dead']]()
         model = LevelFactory.create_model(emitter, width, height)
         view = LevelFactory.create_view(model, surface, emitter)
-        controller = LevelFactory.create_controller(model, view, emitter)
-        return controller
+        return LevelFactory.create_controller(model, view, emitter)

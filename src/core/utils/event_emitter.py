@@ -1,4 +1,7 @@
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, TypeVar
+
+
+T = TypeVar('T')
 
 
 class EventEmitter[T]:

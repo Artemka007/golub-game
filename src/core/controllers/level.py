@@ -35,7 +35,7 @@ class LevelController(pygame.sprite.Sprite):
     def __save_state(self):
         self.model.player_store.save()
         self.model.coins_store.save()
-        self.view.menu.hide()
+        self.view.menu.model.hide()
 
     def __restart_game(self): 
         self.model.reset()
@@ -47,8 +47,8 @@ class LevelController(pygame.sprite.Sprite):
         self.__init__(self.model, self.view, self.emitter)
 
     def __player_dead(self): 
-        self.view.dead_menu.show()
+        self.view.dead_menu.model.show()
         self.emitter.off('player_dead', self.__player_dead)
     
     def __cancel(self): 
-        self.view.menu.hide()
+        self.view.menu.model.hide()

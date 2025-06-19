@@ -17,5 +17,4 @@ class PlatformFactory(AbstractMVCFactory[PlatformModel, PlatformView, PlatformCo
     def create_mvc_component(x: int, y: int):
         model = PlatformFactory.create_model(x, y)
         view = PlatformFactory.create_view()
-        controller = PlatformFactory.create_controller(model, view)
-        return controller
+        return PlatformFactory.create_controller(model, view)

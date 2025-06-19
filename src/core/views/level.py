@@ -6,14 +6,16 @@ from src.core.models.level import LevelModel
 from src.core.utils.event_emitter import EventEmitter
 from src.ui.coin_display import CoinDisplay
 from src.ui.dead_menu import DeadMenu
+from src.ui.factories.dead_menu import DeadMenuFactory
+from src.ui.factories.menu import MenuFactory
 from src.ui.menu import Menu
 
 
 class LevelView:
     def __init__(self, model: LevelModel, screen: pygame.Surface, emitter: EventEmitter[Literal['save', 'restart', 'cancel', 'player_dead']]):
         self.screen = screen
-        self.menu = Menu(screen, emitter)
-        self.dead_menu = DeadMenu(screen, emitter)
+        self.menu = MenuFactory.create_mvc_component(screen, emitter)
+        self.dead_menu = DeadMenuFactory.create_mvc_component(screen, emitter)
         self.background = pygame.image.load("./assets/images/background.jpg").convert()
         original_width, original_height = self.background.get_size()
         self.background = pygame.transform.scale(self.background, (original_width * 2, original_height * 2))
@@ -22,7 +24,7 @@ class LevelView:
         self.emitter = emitter
 
     def draw(self, model: LevelModel):
-        if self.menu.visible:
+        if self.menu.model.visible:
             self.menu.draw()
             return
 
@@ -42,10 +44,10 @@ class LevelView:
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            if self.menu.visible:
-                self.menu.hide()
+            if self.menu.model.visible:
+                self.menu.model.hide()
             else:
-                self.menu.show()
+                self.menu.model.show()
         self.menu.handle_event(event)
         self.dead_menu.handle_event(event)
         

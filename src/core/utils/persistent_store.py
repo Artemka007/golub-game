@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
+from typing import TypeVar
 from src.core.utils.stack import Stack
+
+
+T = TypeVar('T')
 
 
 class PersistentStore[T](ABC):

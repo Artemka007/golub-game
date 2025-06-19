@@ -1,14 +1,18 @@
+from typing import TypeVar
 from src.core.utils.observable import Observable
 
 
-class Subject[TValue](Observable[TValue]):
-    _value: TValue
+T = TypeVar('T')
+
+
+class Subject[T](Observable[T]):
+    _value: T
 
     def subscribe(self, callback):
         super().subscribe(callback)
         callback(self._value)
 
-    def next(self, value: TValue):
+    def next(self, value: T):
         self._value = value
         for callback in self._subscribers:
             callback(value)
@@ -17,8 +21,8 @@ class Subject[TValue](Observable[TValue]):
         return self._value
     
     def as_observable(self):
-        class ObservableView(Observable[TValue]):
-            def __init__(self, subject: Subject[TValue]):
+        class ObservableView(Observable[T]):
+            def __init__(self, subject: Subject[T]):
                 super().__init__()
                 self._subscribers = subject._subscribers
 
