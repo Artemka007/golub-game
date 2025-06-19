@@ -1,9 +1,8 @@
 import pygame
 from src.core.utils.event_emitter import EventEmitter
 
-from typing import List, Literal
+from typing import Literal
 
-from src.ui.button import Button
 from src.ui.factories.button import ButtonFactory
 from src.ui.views.button import ButtonView
 

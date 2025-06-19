@@ -4,11 +4,9 @@ from src.core.camera import Camera
 from src.core.constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from src.core.models.level import LevelModel
 from src.core.utils.event_emitter import EventEmitter
-from src.ui.coin_display import CoinDisplay
-from src.ui.dead_menu import DeadMenu
+from src.ui.factories.coin_display import CoinDisplayFactory
 from src.ui.factories.dead_menu import DeadMenuFactory
 from src.ui.factories.menu import MenuFactory
-from src.ui.menu import Menu
 
 
 class LevelView:
@@ -19,7 +17,7 @@ class LevelView:
         self.background = pygame.image.load("./assets/images/background.jpg").convert()
         original_width, original_height = self.background.get_size()
         self.background = pygame.transform.scale(self.background, (original_width * 2, original_height * 2))
-        self.coin_display = CoinDisplay(model.coins_store.coins_collected)
+        self.coin_display = CoinDisplayFactory.create_mvc_component(screen, model.coins_store.coins_collected)
         self.model = model
         self.emitter = emitter
 
@@ -38,7 +36,7 @@ class LevelView:
             coin.update()
             coin.draw(self.screen, model.camera)
 
-        self.coin_display.draw(self.screen)
+        self.coin_display.draw()
         self.menu.draw()
         self.dead_menu.draw()
 

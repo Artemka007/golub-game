@@ -14,10 +14,10 @@ class CoinDisplayFactory(AbstractMVCFactory[CoinDisplayModel, CoinDisplayView, C
     def create_view(screen: pygame.Surface):
         return CoinDisplayView(screen)
 
-    def create_controller(model, view):
-        return CoinDisplayController(model, view)
+    def create_controller(model, view, coins_collected: Observable[int]):
+        return CoinDisplayController(model, view, coins_collected)
     
-    def create_mvc_component(screen: pygame.Surface):
+    def create_mvc_component(screen: pygame.Surface, coins_collected: Observable[int]):
         model = CoinDisplayFactory.create_model()
         view = CoinDisplayFactory.create_view(screen)
-        return CoinDisplayFactory.create_controller(model, view)
+        return CoinDisplayFactory.create_controller(model, view, coins_collected)

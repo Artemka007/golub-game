@@ -1,8 +1,4 @@
 import pygame
-from src.core.utils.event_emitter import EventEmitter
-from src.ui.button import Button, WHITE
-
-from typing import Literal
 
 from src.ui.models.dead_menu import DeadMenuModel
 from src.ui.views.dead_menu import DeadMenuView
